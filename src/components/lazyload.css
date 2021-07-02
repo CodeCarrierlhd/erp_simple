@@ -1,0 +1,38 @@
+.imgParent{
+    /* margin: 20px; */
+    position: relative;
+}
+.rightBtn{
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin-right: -40px;
+    margin-top: -10px;
+}
+.add {
+    border: 1px solid;
+    color: #ccc;
+    transition: color .25s;
+    position: relative;
+    padding: 10px;
+    border-radius:100%;
+  }
+  .straightLine{
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 20px;
+    margin-left: -50%;
+    border-top: 2px solid;
+  }
+
+  .horizontalLine{
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 20px;
+    margin-top: -50%;
+    border-left: 2px solid;
+   }
