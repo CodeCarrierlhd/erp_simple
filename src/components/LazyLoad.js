@@ -30,7 +30,7 @@ class LazyLoad extends React.Component {
     UNSAFE_componentWillMount() {
         let { ImgClassName, src, alt, ImgStyle } = this.props.state
         ImgClassName = ImgClassName ? ImgClassName : 'lazyload-img'
-        alt = alt ? alt : '暂无图片'
+        alt = alt ? alt : '图片加载中。。。'
         let images = []
         let refs = []
         const ref = React.createRef()
