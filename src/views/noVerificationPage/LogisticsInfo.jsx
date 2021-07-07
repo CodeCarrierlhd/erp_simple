@@ -54,7 +54,7 @@ function LogisticsInfo(props) {
          }).then(res => {
             console.log(res);
             if (res.code === 200) {
-
+                setTableData(res.data)
             } else {
                 console.log(res.msg);
             }
