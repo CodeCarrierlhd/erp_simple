@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Table, Button, Modal } from 'antd';
+import { Table, Button, Modal,Input } from 'antd';
 import EditForm from './productCompontent/EditForm'
 import { PermissionModel } from '../../components/PermissionModel'
-
+const { Search } = Input;
 
 const role_type = JSON.parse(localStorage.getItem('userInfo')) === null ? '' : JSON.parse(localStorage.getItem('userInfo')).type
 class ProductList extends Component {
@@ -133,6 +133,26 @@ class ProductList extends Component {
             }
         })
     }
+    onSearch = value => {
+        console.log(value)
+        let url=''
+        if(value){
+            url='/findProductBySku/' + value
+        }else{
+            url='/productList'
+        }
+        
+        this.$axios.get(url).then(res => {
+            console.log(res);
+            if (res.code === 200) {
+                this.setState({
+                    productData: res.data
+                })
+            } else {
+                console.log(res.msg);
+            }
+        })
+    };
     render() {
         const columns = [
             {
@@ -179,10 +199,11 @@ class ProductList extends Component {
         };
         return (
             <div>
-                <div style={{ margin: '20px' }}>
+                <div style={{ margin: '20px', display: 'flex' }}>
                     <Button type="primary" disabled={selectedRows.length === 0} onClick={this.delAllWareHouse}>
                         全部删除
                     </Button>
+                    <Search placeholder="SKU 查询" onSearch={this.onSearch} allowClear style={{marginLeft:'15px' ,width:'400px'}} />
                 </div>
                 <Table
                     columns={columns}

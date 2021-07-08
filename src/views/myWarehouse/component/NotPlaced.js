@@ -153,8 +153,14 @@ export default class NotPlaced extends Component {
         })
     }
     onSearch = (value) => {
-        console.log(value);
-        this.$axios.get('/findWarehouseBySku/' + value).then(res => {
+        console.log(value)
+        let url=''
+        if(value){
+            url='/findWarehouseBySku/' + value
+        }else{
+            url='/warehouseList/' + this.props.inWarehouse
+        }
+        this.$axios.get(url).then(res => {
             console.log(res);
             if (res.code === 200) {
                 this.setState({
