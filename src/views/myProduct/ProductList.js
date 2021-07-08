@@ -214,7 +214,7 @@ class ProductList extends Component {
                         ...rowSelection,
                     }}
                 />
-                <Modal title="Basic Modal" visible={editVisiable} onOk={this.handleOk} onCancel={this.handleCancel} width='900px'>
+                <Modal title="Basic Modal" visible={editVisiable} onOk={this.handleOk} onCancel={this.handleCancel} width='900px' destroyOnClose={true}>
                     <EditForm childData={childData} onRef={this.getFormValue} />
                 </Modal>
             </div>

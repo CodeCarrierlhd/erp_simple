@@ -27,7 +27,6 @@ class EditForm extends Component {
     //     // }
     // }
     handleSubmit = () => {
-
         let fileListArr = []
         let filesArr = this.fileChild.state.fileList
         console.log(filesArr);
