@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import moment from 'moment';
 import Carousel from 'react-images'
 import AccessoriesForm from './AccessoriesForm';
-import { Table, Modal } from 'antd';
+import { Table, Modal, Input } from 'antd';
+const { Search } = Input;
 
 export default class AfterSaleList extends Component {
     state = {
@@ -15,7 +16,8 @@ export default class AfterSaleList extends Component {
         this.getAfterSaleList()
     }
     getAfterSaleList = () => {
-        this.$axios.get('/afterSaleList').then(res => {
+        this.$axios.get('/afterSaleList',{
+        }).then(res => {
             console.log(res);
             if (res.code === 200) {
                 this.setState({
@@ -103,6 +105,22 @@ export default class AfterSaleList extends Component {
         }
 
     }
+    onSearch = (value) => {
+        this.$axios.get('/afterSaleList', {
+            params: {
+                value
+            }
+        }).then(res => {
+            console.log(res);
+            if (res.code === 200) {
+                this.setState({
+                    afterSaleData: res.data
+                })
+            } else {
+                console.log(res.msg);
+            }
+        })
+    }
     render() {
         const columns = [
             {
@@ -167,6 +185,9 @@ export default class AfterSaleList extends Component {
         };
         return (
             <div>
+                <p style={{ width: '30%' }}>
+                    <Search placeholder="input search text" onSearch={this.onSearch} enterButton />
+                </p>
                 <Table
                     columns={columns}
                     dataSource={afterSaleData}

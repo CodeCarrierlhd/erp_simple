@@ -36,7 +36,7 @@ class LazyLoad extends React.Component {
         const ref = React.createRef()
         refs.push(ref)
         images.push(
-            <div className='imgParent'>
+            <div className='imgParent' key={src+Math.random()}>
                 <div key={src} style={{ display: 'flex', alignItems: 'center' }} >
                     <img className={ImgClassName} ref={ref} data-src={src} alt={alt} style={{ ...ImgStyle }} />
                     {/* <Button type="primary"   >
