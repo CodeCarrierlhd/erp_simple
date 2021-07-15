@@ -48,8 +48,8 @@ function ProducNumber(props) {
             state={{
                 src: mainImg,
                 alt: '',
-                width:'140px',
-                height:'140px',
+                width:'50%',
+                height:'2%',
                 BoxClassName: 'lazyload-box', // 这是容器的类名
                 ImgClassName: 'lazyload-img' // 这是img的类名
             }}
@@ -72,19 +72,19 @@ function ProducNumber(props) {
     const columns = [
         {
             title: '图片',
-            width: 100,
+            width: '30%',
             key: 'mainImg',
             render: (text, record) => handleMianImage(record)
         },
         {
             title: '产品SKU',
-            width: 80,
+            width: '15%',
             dataIndex: 'mpn',
             key: 'mpn',
         },
         {
             title: '产品名称',
-            width: 100,
+            width: '15%',
             dataIndex: 'productName',
             key: 'productName',
         },
@@ -92,7 +92,17 @@ function ProducNumber(props) {
             title: '产品数量',
             dataIndex: 'productNumber',
             key: 'productNumber',
-            width: 50,
+            width: '15%',
+        },
+        {
+            title: 'Action',
+            key: 'operation',
+            width: '15%',
+            render: (text, record) =>{               
+                return (<div>
+                { record.fileUpload == null ? '' : <a href={process.env.REACT_APP_URL + '/imgs/' + record.fileUpload} download="">{record.mpn}</a>}
+            </div>)
+            }
         },
 
     ]
@@ -114,7 +124,7 @@ function ProducNumber(props) {
         })
     }
     return (
-        <div style={{ margin: '40px', fontSize: '22px' }}>
+        <div style={{ margin: '40px', fontSize: '22px',padding:'80px 100px' }}>
             <p style={{ width: '30%' }}>
                 <Search placeholder="input search text" onSearch={onSearch} enterButton />
             </p>

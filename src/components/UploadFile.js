@@ -41,6 +41,8 @@ class UploadFile extends Component {
 
             }
         }
+        console.log(newFileList);
+
         this.setState({
             fileList: newFileList
         })
@@ -67,6 +69,7 @@ class UploadFile extends Component {
                 <Upload
                     name="file"
                     action={process.env.REACT_APP_URL + "/uploadFile"}
+                    data={this.props.fileName ? {filename:this.props.fileName} : {}}
                     fileList={fileList}
                     onChange={this.handleChange}
                 >
