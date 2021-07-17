@@ -175,15 +175,24 @@ export default class NotPlaced extends Component {
         this.formChild = ref
     }
     handleTime = (time) => {
-        let new_date = new Date(); //新建一个日期对象，默认现在的时间
-        let old_date = new Date(time); //设置过去的一个时间点，"yyyy-MM-dd HH:mm:ss"格式化日期
-        let difftime = (new_date - old_date) / 1000; //计算时间差,并把毫秒转换成秒
-        let days = parseInt(Math.abs(difftime) / 86400); // 天  24*60*60*1000 
-        return (
-            <span style={{ color: days <= 14 ? 'red' : '', fontSize: '18px' }}>
-                {moment(time).format("YYYY-MM-DD")}
-            </span>
-        )
+        if(time){
+            let new_date = new Date(); //新建一个日期对象，默认现在的时间
+            let old_date = new Date(time); //设置过去的一个时间点，"yyyy-MM-dd HH:mm:ss"格式化日期
+            let difftime = (new_date - old_date) / 1000; //计算时间差,并把毫秒转换成秒
+            let days = parseInt(Math.abs(difftime) / 86400); // 天  24*60*60*1000 
+            return (
+                <span style={{ color: days <= 14 ? 'red' : '', fontSize: '18px' }}>
+                    {moment(time).format("YYYY-MM-DD")}
+                </span>
+            )
+        }else{
+            return (
+                <span style={{  fontSize: '18px' }}>
+                   未到港
+                </span>
+            )
+        }
+
     }
     handleShowName = (keyNumber) => {
         let text = ''
@@ -243,6 +252,12 @@ export default class NotPlaced extends Component {
                 title: '预计到港时间',
                 dataIndex: 'arrivalTime',
                 key: 'arrivalTime',
+                render: (text, record) => this.handleTime(text)
+            },
+            {
+                title: '实际到港时间',
+                dataIndex: 'relArrivedTime',
+                key: 'relArrivedTime',
                 render: (text, record) => this.handleTime(text)
             },
             {
@@ -354,7 +369,7 @@ export default class NotPlaced extends Component {
                 <Table
                     columns={columns}
                     dataSource={warehouseData}
-                    scroll={{ x: 1500, y: 700 }}
+                    scroll={{ x: 1800, y: 700 }}
                     rowKey={record => record.id}
                     rowSelection={{
                         ...rowSelection,

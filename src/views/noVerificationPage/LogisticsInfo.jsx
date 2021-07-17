@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react"
-import { Table, Input } from 'antd';
+import { Table, Input,Select  } from 'antd';
 import $axios from '../../axios/$axios';
 import moment from 'moment'
 const { Search } = Input;
+const { Option } = Select;
 
 
 function LogisticsInfo(props) {
@@ -96,11 +97,30 @@ function LogisticsInfo(props) {
             }
         })
     }
+
+    function handleChange(value) {
+        console.log(`selected ${value}`);
+        onSearch(value)
+      }
+      function handleWarehouseChange(value) {
+        console.log(`selected ${value}`);
+        onSearch(value)
+      }
     return (
-        <div style={{ margin: '40px', fontSize: '22px' }}>
-            <p style={{ width: '30%' }}>
+        <div style={{ margin: '40px' }}>
+            <div style={{ width: '45%',display:'flex',marginBottom:'15px' }}>
                 <Search placeholder="input search text" onSearch={onSearch} enterButton />
-            </p>
+                <span style={{width:'15%',marginLeft:'15px',textAlign:'center',lineHeight:'32px'}}>状态：</span>
+                <Select defaultValue="" onChange={handleChange} style={{width:'40%',marginLeft:'15px'}}>
+                    <Option value="1">全部</Option>
+                    <Option value="3">异常</Option>
+                </Select>
+                <span style={{width:'15%',marginLeft:'15px',textAlign:'center',lineHeight:'32px'}}>仓库：</span>
+                <Select defaultValue="" onChange={handleWarehouseChange} style={{width:'40%',marginLeft:'15px'}}>
+                    <Option value="5">云仓</Option>
+                    <Option value="6">其他</Option>
+                </Select>
+            </div>
             <Table columns={columns} dataSource={data}
                 bordered
                 pagination={paginationProps}

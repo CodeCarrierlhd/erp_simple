@@ -47,7 +47,7 @@ class AddWareHouse extends Component {
             values.fileUpload = fileList.toString()
             if (err) return err
             for (const key in values) {
-                if (key === 'deliveryDate' || key === 'arrivalTime') {
+                if (key === 'deliveryDate' || key === 'arrivalTime' || key === 'relArrivedTime')  {
                     console.log(111);
 
                     values[key] = moment(values[key]).format("YYYY-MM-DD")
@@ -278,8 +278,14 @@ class AddWareHouse extends Component {
                             ]
                         })(<DatePicker format={dateFormat} style={{ width: "60%" }} />)}
                     </Form.Item>
-                    <Form.Item label="到达日期">
+                    <Form.Item label="预计到达日期">
                         {getFieldDecorator('arrivalTime', {
+                            rules: [
+                            ]
+                        })(<DatePicker format={dateFormat} style={{ width: "60%" }} />)}
+                    </Form.Item>
+                    <Form.Item label="实际到达日期">
+                        {getFieldDecorator('relArrivedTime', {
                             rules: [
                             ]
                         })(<DatePicker format={dateFormat} style={{ width: "60%" }} />)}
@@ -333,7 +339,7 @@ export default Form.create({
         // {}   [键 ， 值]
         if (!props.childData) { return null; } else {
             return Object.entries(props.childData).reduce((v0, [k, v]) => {
-                if (k === 'arrivalTime' || k === 'deliveryDate') {
+                if (k === 'arrivalTime' || k === 'deliveryDate' || k === 'relArrivedTime') {
                     v0[k] = Form.createFormField({
                         value: moment(v),
                     })
