@@ -131,9 +131,9 @@ class AccessoriesForm extends Component {
                 <div>
                     <h1>售后历史记录</h1>
                     {
-                        historyArr.map(item => {
+                        historyArr.map((item,index) => {
                             return (
-                                <ul style={{ border: '1px solid #ccc', listStyle: 'none' }}>
+                                <ul style={{ border: '1px solid #ccc', listStyle: 'none' }} key={item.newOrderNumber+''+index}>
                                     <li>
                                         <span>日期：</span>
                                         <span>{moment(item.changeDate).format("YYYY-MM-DD")}</span>

@@ -197,8 +197,8 @@ export default class AfterSaleList extends Component {
                         ...rowSelection,
                     }}
                 />
-                <Modal title="Basic Modal" visible={showSaleHistory} onOk={this.handleOk} onCancel={this.handleCancel} width='600px' height='800px'>
-                    <AccessoriesForm afterSaleId={afterSaleId} />
+                <Modal title="Basic Modal" visible={showSaleHistory} onOk={this.handleOk} onCancel={this.handleCancel} width='600px' height='800px' destroyOnClose={true}>
+                    <AccessoriesForm afterSaleId={afterSaleId} key={afterSaleId.toString()}/>
                 </Modal>
             </div>
         )
