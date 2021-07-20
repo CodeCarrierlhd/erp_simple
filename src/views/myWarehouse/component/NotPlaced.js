@@ -170,11 +170,15 @@ export default class NotPlaced extends Component {
         }else{
             url='/warehouseList/' + this.props.inWarehouse
         }
-        this.$axios.get(url).then(res => {
+        const {pageOption}=this.state
+        this.$axios.get(url,{
+            params:pageOption
+        }).then(res => {
             console.log(res);
             if (res.code === 200) {
                 this.setState({
-                    warehouseData: res.data
+                    warehouseData: res.data.rows,
+                    total:res.data.total
                 })
             } else {
                 console.log(res.msg);

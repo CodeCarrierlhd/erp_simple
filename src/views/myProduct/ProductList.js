@@ -146,16 +146,19 @@ class ProductList extends Component {
         console.log(value)
         let url = ''
         if (value) {
-            url = '/findProductBySku/' + value
+            url = '/productList'+value
         } else {
             url = '/productList'
         }
-
-        this.$axios.get(url).then(res => {
+        const {pageOption}=this.state
+        this.$axios.get(url,{
+            params:pageOption
+        }).then(res => {
             console.log(res);
             if (res.code === 200) {
                 this.setState({
-                    productData: res.data
+                    productData: res.data.rows,
+                    total:res.data.total
                 })
             } else {
                 console.log(res.msg);
