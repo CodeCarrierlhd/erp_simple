@@ -12,17 +12,26 @@ export default class ComponentsList extends Component {
         afterSaleData: [],
         showTable: false,
         importCoulmus: [],
-        importDate: []
+        importDate: [],
+        pageOption:{
+            pageNo: 0,
+            pageSize: 30
+        },
+        total:0
     }
     componentDidMount() {
-        this.getAfterSaleList()
+        const {pageOption}=this.state
+        this.getAfterSaleList(pageOption)
     }
-    getAfterSaleList = () => {
-        this.$axios.get('/partsStatisticsList').then(res => {
+    getAfterSaleList = (pageOption) => {
+        this.$axios.get('/partsStatisticsList',{
+            params:pageOption
+        }).then(res => {
             console.log(res);
             if (res.code === 200) {
                 this.setState({
-                    afterSaleData: res.data
+                    afterSaleData: res.data.rows,
+                    total:res.data.total
                 })
             } else {
                 console.log(res.msg);
@@ -135,6 +144,22 @@ export default class ComponentsList extends Component {
             importCoulmus: this.tableChild.state.tableHeader
         })
     }
+    paginationChange =  (current, size) => {
+        const {pageOption}=this.state
+        let p=Object.assign(pageOption,{ pageNo: current,pageSize: size})
+        this.setState({
+            pageOption:p
+        })
+        this.getAfterSaleList({ pageNo: current,pageSize: size})
+    }
+    changePageSize =  (current, size) => {
+        const {pageOption}=this.state
+        let p=Object.assign(pageOption,{ pageNo: 1,pageSize: size})
+        this.setState({
+            pageOption:p
+        })
+        this.getAfterSaleList({ pageNo: current,pageSize: size})
+    }
     render() {
         const columns = [
             {
@@ -182,7 +207,7 @@ export default class ComponentsList extends Component {
                 render: (text, record) => <a href="" onClick={e => this.accessoriesInfo(e, record)} >编辑</a>
             },
         ];
-        const { afterSaleData, showSaleHistory, childData, showTable, importCoulmus, importDate } = this.state
+        const { afterSaleData, showSaleHistory, childData, showTable, importCoulmus, importDate,pageOption,total  } = this.state
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 this.selecteWarehouse(selectedRows)
@@ -190,6 +215,17 @@ export default class ComponentsList extends Component {
         };
         const tableHeader = ['账号', '订单日期', '订单号', '产品SKU', '更换方式', '更换部位', '备注']
         const tableColums = ['account', 'saleDate', 'orderNumber', 'sku', 'wayType', 'wayPart', 'remark']
+        const paginationProps = {
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: () => `共${total}条`,
+            total: total,
+            pageSizeOptions: ['30', '50', '100'],
+            current: pageOption.pageNo,
+            pageSize: pageOption.pageSize,
+            onShowSizeChange: (current, pageSize) => this.changePageSize(current, pageSize),
+            onChange: (current, size) => this.paginationChange(current, size)
+        }
         return (
             <div>
                 <ExclTable showTableModle={this.showTableModle} onRef={this.getTableDate} tableHeader={tableHeader} />
@@ -199,6 +235,7 @@ export default class ComponentsList extends Component {
                     dataSource={afterSaleData}
                     scroll={{ x: 1500, y: 700 }}
                     rowKey={record => record.id}
+                    pagination={paginationProps}
                     rowSelection={{
                         ...rowSelection,
                     }}
