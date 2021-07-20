@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Button, Modal,Input } from 'antd';
+import { Table, Button, Modal, Input } from 'antd';
 import EditForm from './productCompontent/EditForm'
 import { PermissionModel } from '../../components/PermissionModel'
 const { Search } = Input;
@@ -10,18 +10,27 @@ class ProductList extends Component {
         productData: [],
         selectedRows: [],
         editVisiable: false,
-        childData: {}
+        childData: {},
+        pageOption:{
+            pageNo: 0,
+            pageSize: 30
+        },
+        total:0
     }
 
     componentDidMount() {
-        this.getProductList()
+        const {pageOption}=this.state
+        this.getProductList(pageOption)
     }
-    getProductList = () => {
-        this.$axios.get('/productList').then(res => {
+    getProductList = (pageOption) => {
+        this.$axios.get('/productList',{
+            params:pageOption
+        }).then(res => {
             console.log(res);
             if (res.code === 200) {
                 this.setState({
-                    productData: res.data
+                    productData: res.data.rows,
+                    total:res.data.total
                 })
             } else {
                 console.log(res.msg);
@@ -135,13 +144,13 @@ class ProductList extends Component {
     }
     onSearch = value => {
         console.log(value)
-        let url=''
-        if(value){
-            url='/findProductBySku/' + value
-        }else{
-            url='/productList'
+        let url = ''
+        if (value) {
+            url = '/findProductBySku/' + value
+        } else {
+            url = '/productList'
         }
-        
+
         this.$axios.get(url).then(res => {
             console.log(res);
             if (res.code === 200) {
@@ -153,6 +162,24 @@ class ProductList extends Component {
             }
         })
     };
+    // 当前页面切换
+
+    paginationChange =  (current, size) => {
+        const {pageOption}=this.state
+        let p=Object.assign(pageOption,{ pageNo: current,pageSize: size})
+        this.setState({
+            pageOption:p
+        })
+        this.getProductList({ pageNo: current,pageSize: size})
+    }
+    changePageSize =  (current, size) => {
+        const {pageOption}=this.state
+        let p=Object.assign(pageOption,{ pageNo: 1,pageSize: size})
+        this.setState({
+            pageOption:p
+        })
+        this.getProductList({ pageNo: current,pageSize: size})
+    }
     render() {
         const columns = [
             {
@@ -182,34 +209,46 @@ class ProductList extends Component {
             {
                 title: 'Action',
                 key: 'operation',
-                render: (text, record) =>{                 
+                render: (text, record) => {
                     return (<div style={{ width: '100px', display: 'flex', justifyContent: 'space-around' }}>
-                    <a href="" onClick={e => this.delProduct(e, record)} >删除</a>
-                    <a href="" onClick={e => this.editProduct(e, record)} >编辑</a>
-                    { record.fileUpload == null ? '' : <a href={process.env.REACT_APP_URL + '/imgs/' + record.fileUpload} download="">附件</a>}
-                </div>)
+                        <a href="" onClick={e => this.delProduct(e, record)} >删除</a>
+                        <a href="" onClick={e => this.editProduct(e, record)} >编辑</a>
+                        {record.fileUpload == null ? '' : <a href={process.env.REACT_APP_URL + '/imgs/' + record.fileUpload} download="">附件</a>}
+                    </div>)
                 }
             },
         ];
-        const { productData, selectedRows, editVisiable, childData } = this.state
+        const { productData, selectedRows, editVisiable, childData,pageOption,total } = this.state
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 this.selecteWarehouse(selectedRows)
             },
         };
+        const paginationProps = {
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: () => `共${total}条`,
+            total: total,
+            pageSizeOptions: ['30', '50', '100'],
+            current: pageOption.pageNo,
+            pageSize: pageOption.pageSize,
+            onShowSizeChange: (current, pageSize) => this.changePageSize(current, pageSize),
+            onChange: (current, size) => this.paginationChange(current, size)
+        }
         return (
             <div>
                 <div style={{ margin: '20px', display: 'flex' }}>
                     <Button type="primary" disabled={selectedRows.length === 0} onClick={this.delAllWareHouse}>
                         全部删除
                     </Button>
-                    <Search placeholder="SKU 查询" onSearch={this.onSearch} allowClear style={{marginLeft:'15px' ,width:'400px'}} />
+                    <Search placeholder="SKU 查询" onSearch={this.onSearch} allowClear style={{ marginLeft: '15px', width: '400px' }} />
                 </div>
                 <Table
                     columns={columns}
                     dataSource={productData}
                     scroll={{ y: 700 }}
                     rowKey={record => record.id}
+                    pagination={paginationProps}
                     rowSelection={{
                         ...rowSelection,
                     }}

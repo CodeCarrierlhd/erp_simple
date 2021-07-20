@@ -16,12 +16,18 @@ export default class NotPlaced extends Component {
         showWareHouse: false,
         selectedRows: [],
         showWareHouseEdit: false,
-        defaultWarehouse: 'all'
+        defaultWarehouse: 'all',
+        pageOption:{
+            pageNo: 0,
+            pageSize: 30
+        },
+        total:0
 
     }
     componentDidMount() {
         this.props.onRef(this)
-        this.getWareHouseList()
+        const {pageOption}=this.state
+        this.getWareHouseList(pageOption)
     }
     handleWarehouseChange = (value) => {
         console.log(`selected ${value}`);
@@ -73,12 +79,16 @@ export default class NotPlaced extends Component {
             childData: record
         })
     }
-    getWareHouseList = () => {
+    getWareHouseList = (pageOption) => {
         let that = this
-        that.$axios.get('/warehouseList/' + this.props.inWarehouse).then(res => {
+        that.$axios.get('/warehouseList/' + this.props.inWarehouse,{
+            params:pageOption
+        }).then(res => {
+
             if (res.code === 200) {
                 that.setState({
-                    warehouseData: res.data
+                    warehouseData: res.data.rows,
+                    total:res.data.total
                 })
 
             } else {
@@ -219,6 +229,22 @@ export default class NotPlaced extends Component {
 
 
     }
+    paginationChange =  (current, size) => {
+        const {pageOption}=this.state
+        let p=Object.assign(pageOption,{ pageNo: current,pageSize: size})
+        this.setState({
+            pageOption:p
+        })
+        this.getWareHouseList({ pageNo: current,pageSize: size})
+    }
+    changePageSize =  (current, size) => {
+        const {pageOption}=this.state
+        let p=Object.assign(pageOption,{ pageNo: 1,pageSize: size})
+        this.setState({
+            pageOption:p
+        })
+        this.getWareHouseList({ pageNo: current,pageSize: size})
+    }
     render() {
         const columns = [
             {
@@ -325,7 +351,7 @@ export default class NotPlaced extends Component {
             }
         ];
 
-        const { warehouseData, showWareHouse, subData, selectedRows, showWareHouseEdit, childData, defaultWarehouse } = this.state
+        const { warehouseData, showWareHouse, subData, selectedRows, showWareHouseEdit, childData, defaultWarehouse,pageOption,total } = this.state
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 this.selecteWarehouse(selectedRows)
@@ -338,6 +364,17 @@ export default class NotPlaced extends Component {
             { value: '4', name: '易仓' },
             { value: '5', name: '云仓' },
         ]
+        const paginationProps = {
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: () => `共${total}条`,
+            total: total,
+            pageSizeOptions: ['30', '50', '100'],
+            current: pageOption.pageNo,
+            pageSize: pageOption.pageSize,
+            onShowSizeChange: (current, pageSize) => this.changePageSize(current, pageSize),
+            onChange: (current, size) => this.paginationChange(current, size)
+        }
         return (
             <div>
                 <div style={{ marginBottom: '20px', display: 'flex' }}>
@@ -371,6 +408,7 @@ export default class NotPlaced extends Component {
                     dataSource={warehouseData}
                     scroll={{ x: 1800, y: 700 }}
                     rowKey={record => record.id}
+                    pagination={paginationProps}
                     rowSelection={{
                         ...rowSelection,
                     }}

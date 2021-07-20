@@ -10,18 +10,26 @@ export default class AfterSaleList extends Component {
         showSaleHistory: false,
         afterSaleData: [],
         lightboxIsOpen: false,
-        afterSaleId: ''
+        afterSaleId: '',
+        pageOption:{
+            pageNo: 0,
+            pageSize: 30
+        },
+        total:0
     }
     componentDidMount() {
-        this.getAfterSaleList()
+        const {pageOption}=this.state
+        this.getAfterSaleList(pageOption)
     }
-    getAfterSaleList = () => {
+    getAfterSaleList = (pageOption) => {
         this.$axios.get('/afterSaleList',{
+            params:{pageOption}
         }).then(res => {
             console.log(res);
             if (res.code === 200) {
                 this.setState({
-                    afterSaleData: res.data
+                    afterSaleData: res.data.rows,
+                    total:res.data.total
                 })
             } else {
                 console.log(res.msg);
@@ -121,6 +129,22 @@ export default class AfterSaleList extends Component {
             }
         })
     }
+    paginationChange =  (current, size) => {
+        const {pageOption}=this.state
+        let p=Object.assign(pageOption,{ pageNo: current,pageSize: size})
+        this.setState({
+            pageOption:p
+        })
+        this.getAfterSaleList({ pageNo: current,pageSize: size})
+    }
+    changePageSize =  (current, size) => {
+        const {pageOption}=this.state
+        let p=Object.assign(pageOption,{ pageNo: 1,pageSize: size})
+        this.setState({
+            pageOption:p
+        })
+        this.getAfterSaleList({ pageNo: current,pageSize: size})
+    }
     render() {
         const columns = [
             {
@@ -177,12 +201,23 @@ export default class AfterSaleList extends Component {
                 render: (text, record) => <a href="" onClick={e => this.accessoriesInfo(e, record)} >配件详情</a>
             },
         ];
-        const { afterSaleData, showSaleHistory, afterSaleId } = this.state
+        const { afterSaleData, showSaleHistory, afterSaleId,pageOption,total } = this.state
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 this.selecteWarehouse(selectedRows)
             },
         };
+        const paginationProps = {
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: () => `共${total}条`,
+            total: total,
+            pageSizeOptions: ['30', '50', '100'],
+            current: pageOption.pageNo,
+            pageSize: pageOption.pageSize,
+            onShowSizeChange: (current, pageSize) => this.changePageSize(current, pageSize),
+            onChange: (current, size) => this.paginationChange(current, size)
+        }
         return (
             <div>
                 <p style={{ width: '30%' }}>
@@ -193,6 +228,7 @@ export default class AfterSaleList extends Component {
                     dataSource={afterSaleData}
                     scroll={{ x: 1500, y: 700 }}
                     rowKey={record => record.id}
+                    pagination={paginationProps}
                     rowSelection={{
                         ...rowSelection,
                     }}
