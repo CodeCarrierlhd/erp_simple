@@ -19,6 +19,11 @@ class AddWareHouse extends Component {
         subData: [],
         proGroup: [],
         productNumber: 0,
+        pageOption:{
+            pageNo: 0,
+            pageSize: 50
+        },
+        total:0
     }
     componentDidMount() {
         if (this.props.onRef) {
@@ -48,8 +53,6 @@ class AddWareHouse extends Component {
             if (err) return err
             for (const key in values) {
                 if (key === 'deliveryDate' || key === 'arrivalTime' || key === 'relArrivedTime')  {
-                    console.log(111);
-
                     values[key] = moment(values[key]).format("YYYY-MM-DD")
                 }
             }
@@ -103,9 +106,9 @@ class AddWareHouse extends Component {
         });
     }
     showModal = () => {
-        const { subData } = this.state
+        const { subData,pageOption } = this.state
         if (subData.length === 0) {
-            this.getProductList()
+            this.getProductList(pageOption)
         }
         this.setState({
             isModalVisible: true
@@ -124,12 +127,15 @@ class AddWareHouse extends Component {
             subData: []
         })
     };
-    getProductList = () => {
-        this.$axios.get('/productList').then(res => {
+    getProductList = (pageOption) => {
+        this.$axios.get('/productList',{
+            params:pageOption
+        }).then(res => {
             console.log(res);
             if (res.code === 200) {
                 this.setState({
-                    subData: res.data
+                    subData: res.data.rows,
+                    total:res.data.total
                 })
             } else {
                 console.log(res.msg);
@@ -171,6 +177,22 @@ class AddWareHouse extends Component {
     getFileList = (ref) => {
         this.fileChild = ref
     }
+    paginationChange =  (current, size) => {
+        const {pageOption}=this.state
+        let p=Object.assign(pageOption,{ pageNo: current,pageSize: size})
+        this.setState({
+            pageOption:p
+        })
+        this.getProductList({ pageNo: current,pageSize: size})
+    }
+    changePageSize =  (current, size) => {
+        const {pageOption}=this.state
+        let p=Object.assign(pageOption,{ pageNo: 1,pageSize: size})
+        this.setState({
+            pageOption:p
+        })
+        this.getProductList({ pageNo: current,pageSize: size})
+    }
     render() {
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
@@ -182,7 +204,7 @@ class AddWareHouse extends Component {
             }
         };
         const dateFormat = 'YYYY-MM-DD';
-        const { isModalVisible, subData } = this.state
+        const { isModalVisible, subData,pageOption,total } = this.state
         const columnsSub = [
             {
                 title: 'SKU',
@@ -217,6 +239,17 @@ class AddWareHouse extends Component {
             { value: '4', name: '易仓' },
             { value: '5', name: '云仓' },
         ]
+        const paginationProps = {
+            showSizeChanger: true,
+            // showQuickJumper: true,
+            showTotal: () => `共${total}条`,
+            total: total,
+            pageSizeOptions: ['50', '100', '200'],
+            current: pageOption.pageNo,
+            pageSize: pageOption.pageSize,
+            onShowSizeChange: (current, pageSize) => this.changePageSize(current, pageSize),
+            onChange: (current, size) => this.paginationChange(current, size)
+        }
         return (
             <div style={{ width: '80%', margin: '40px auto', textAlign: 'center' }
             }>
@@ -284,7 +317,7 @@ class AddWareHouse extends Component {
                             ]
                         })(<DatePicker format={dateFormat} style={{ width: "60%" }} />)}
                     </Form.Item>
-                    <Form.Item label="实际到达日期">
+                    <Form.Item label="实际入仓日期">
                         {getFieldDecorator('relArrivedTime', {
                             rules: [
                             ]
@@ -322,6 +355,7 @@ class AddWareHouse extends Component {
                 <Modal title="Basic Modal" visible={isModalVisible} onOk={this.handleOk} onCancel={this.handleCancel} width='900px' destroyOnClose={true}>
                     <Table
                         columns={columnsSub} dataSource={subData}
+                        pagination={paginationProps}
                         scroll={{ x: 600, y: 300 }}
                         rowKey={record => record.id + 'pt'}
                     />

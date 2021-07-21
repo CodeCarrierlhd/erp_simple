@@ -15,7 +15,7 @@ export default class ComponentsList extends Component {
         importDate: [],
         pageOption:{
             pageNo: 0,
-            pageSize: 30
+            pageSize: 50
         },
         total:0
     }
@@ -220,7 +220,7 @@ export default class ComponentsList extends Component {
             showQuickJumper: true,
             showTotal: () => `共${total}条`,
             total: total,
-            pageSizeOptions: ['30', '50', '100'],
+            pageSizeOptions: ['50', '100', '200'],
             current: pageOption.pageNo,
             pageSize: pageOption.pageSize,
             onShowSizeChange: (current, pageSize) => this.changePageSize(current, pageSize),

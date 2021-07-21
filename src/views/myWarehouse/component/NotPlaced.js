@@ -19,15 +19,14 @@ export default class NotPlaced extends Component {
         defaultWarehouse: 'all',
         pageOption:{
             pageNo: 0,
-            pageSize: 30
+            pageSize: 50
         },
         total:0
 
     }
     componentDidMount() {
         this.props.onRef(this)
-        const {pageOption}=this.state
-        this.getWareHouseList(pageOption)
+        this.getWareHouseList()
     }
     handleWarehouseChange = (value) => {
         console.log(`selected ${value}`);
@@ -79,7 +78,8 @@ export default class NotPlaced extends Component {
             childData: record
         })
     }
-    getWareHouseList = (pageOption) => {
+    getWareHouseList = () => {
+        const {pageOption}=this.state
         let that = this
         that.$axios.get('/warehouseList/' + this.props.inWarehouse,{
             params:pageOption
@@ -238,16 +238,15 @@ export default class NotPlaced extends Component {
         let p=Object.assign(pageOption,{ pageNo: current,pageSize: size})
         this.setState({
             pageOption:p
-        })
-        this.getWareHouseList({ pageNo: current,pageSize: size})
+        }, this.getWareHouseList())
+       
     }
     changePageSize =  (current, size) => {
         const {pageOption}=this.state
         let p=Object.assign(pageOption,{ pageNo: 1,pageSize: size})
         this.setState({
             pageOption:p
-        })
-        this.getWareHouseList({ pageNo: current,pageSize: size})
+        }, this.getWareHouseList())
     }
     render() {
         const columns = [
@@ -285,7 +284,7 @@ export default class NotPlaced extends Component {
                 render: (text, record) => this.handleTime(text)
             },
             {
-                title: '实际到港时间',
+                title: '实际入仓时间',
                 dataIndex: 'relArrivedTime',
                 key: 'relArrivedTime',
                 render: (text, record) => this.handleTime(text)
@@ -373,7 +372,7 @@ export default class NotPlaced extends Component {
             showQuickJumper: true,
             showTotal: () => `共${total}条`,
             total: total,
-            pageSizeOptions: ['30', '50', '100'],
+            pageSizeOptions: ['50', '100', '200'],
             current: pageOption.pageNo,
             pageSize: pageOption.pageSize,
             onShowSizeChange: (current, pageSize) => this.changePageSize(current, pageSize),

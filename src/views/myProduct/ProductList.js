@@ -13,7 +13,7 @@ class ProductList extends Component {
         childData: {},
         pageOption:{
             pageNo: 0,
-            pageSize: 30
+            pageSize: 50
         },
         total:0
     }
@@ -129,6 +129,7 @@ class ProductList extends Component {
         this.formChild = ref
     }
     updateProduct = (product) => {
+        const {pageOption}=this.state
         this.$axios.put('/updateProduct', {
             params: {
                 productId: product.id
@@ -136,7 +137,7 @@ class ProductList extends Component {
         }).then(res => {
             console.log(res);
             if (res.code === 200) {
-                this.getProductList()
+                this.getProductList(pageOption)
             } else {
                 console.log(res.msg);
             }
@@ -144,14 +145,14 @@ class ProductList extends Component {
     }
     onSearch = value => {
         console.log(value)
-        let url = ''
-        if (value) {
-            url = '/productList'+value
-        } else {
-            url = '/productList'
-        }
+        // let url = ''
+        // if (value) {
+        //     url = '/productList/:'+value
+        // } else {
+        //     url = '/productList'
+        // }
         const {pageOption}=this.state
-        this.$axios.get(url,{
+        this.$axios.get('/findProductBySku/'+value,{
             params:pageOption
         }).then(res => {
             console.log(res);
@@ -232,7 +233,7 @@ class ProductList extends Component {
             showQuickJumper: true,
             showTotal: () => `共${total}条`,
             total: total,
-            pageSizeOptions: ['30', '50', '100'],
+            pageSizeOptions: ['50', '100', '200'],
             current: pageOption.pageNo,
             pageSize: pageOption.pageSize,
             onShowSizeChange: (current, pageSize) => this.changePageSize(current, pageSize),
