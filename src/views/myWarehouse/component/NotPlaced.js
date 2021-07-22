@@ -17,11 +17,11 @@ export default class NotPlaced extends Component {
         selectedRows: [],
         showWareHouseEdit: false,
         defaultWarehouse: 'all',
-        pageOption:{
+        pageOption: {
             pageNo: 0,
             pageSize: 50
         },
-        total:0
+        total: 0
 
     }
     componentDidMount() {
@@ -79,16 +79,16 @@ export default class NotPlaced extends Component {
         })
     }
     getWareHouseList = () => {
-        const {pageOption}=this.state
+        const { pageOption } = this.state
         let that = this
-        that.$axios.get('/warehouseList/' + this.props.inWarehouse,{
-            params:pageOption
+        that.$axios.get('/warehouseList/' + this.props.inWarehouse, {
+            params: pageOption
         }).then(res => {
 
             if (res.code === 200) {
                 that.setState({
                     warehouseData: res.data.rows,
-                    total:res.data.total
+                    total: res.data.total
                 })
 
             } else {
@@ -164,21 +164,21 @@ export default class NotPlaced extends Component {
     }
     onSearch = (value) => {
         console.log(value)
-        let url=''
-        if(value){
-            url='/findWarehouseBySku/' + value
-        }else{
-            url='/warehouseList/' + this.props.inWarehouse
+        let url = ''
+        if (value) {
+            url = '/findWarehouseBySku/' + value
+        } else {
+            url = '/warehouseList/' + this.props.inWarehouse
         }
-        const {pageOption}=this.state
-        this.$axios.get(url,{
-            params:pageOption
+        const { pageOption } = this.state
+        this.$axios.get(url, {
+            params: pageOption
         }).then(res => {
             console.log(res);
             if (res.code === 200) {
                 this.setState({
                     warehouseData: res.data.rows,
-                    total:res.data.total
+                    total: res.data.total
                 })
             } else {
                 console.log(res.msg);
@@ -189,7 +189,7 @@ export default class NotPlaced extends Component {
         this.formChild = ref
     }
     handleTime = (time) => {
-        if(time){
+        if (time) {
             let new_date = new Date(); //新建一个日期对象，默认现在的时间
             let old_date = new Date(time); //设置过去的一个时间点，"yyyy-MM-dd HH:mm:ss"格式化日期
             let difftime = (new_date - old_date) / 1000; //计算时间差,并把毫秒转换成秒
@@ -199,10 +199,10 @@ export default class NotPlaced extends Component {
                     {moment(time).format("YYYY-MM-DD")}
                 </span>
             )
-        }else{
+        } else {
             return (
-                <span style={{  fontSize: '18px' }}>
-                   未到港
+                <span style={{ fontSize: '18px' }}>
+                    未到港
                 </span>
             )
         }
@@ -212,7 +212,7 @@ export default class NotPlaced extends Component {
         let text = ''
         switch (keyNumber) {
             case '1':
-                text = '陈总仓';
+                text = '陈总老东家仓';
                 break;
             case '2':
                 text = '谢总仓';
@@ -226,6 +226,9 @@ export default class NotPlaced extends Component {
             case '5':
                 text = '云仓';
                 break;
+            case '6':
+                text = '陈总自营仓';
+                break;
             default:
                 text = '';
         }
@@ -233,19 +236,19 @@ export default class NotPlaced extends Component {
 
 
     }
-    paginationChange =  (current, size) => {
-        const {pageOption}=this.state
-        let p=Object.assign(pageOption,{ pageNo: current,pageSize: size})
+    paginationChange = (current, size) => {
+        const { pageOption } = this.state
+        let p = Object.assign(pageOption, { pageNo: current, pageSize: size })
         this.setState({
-            pageOption:p
+            pageOption: p
         }, this.getWareHouseList())
-       
+
     }
-    changePageSize =  (current, size) => {
-        const {pageOption}=this.state
-        let p=Object.assign(pageOption,{ pageNo: 1,pageSize: size})
+    changePageSize = (current, size) => {
+        const { pageOption } = this.state
+        let p = Object.assign(pageOption, { pageNo: 1, pageSize: size })
         this.setState({
-            pageOption:p
+            pageOption: p
         }, this.getWareHouseList())
     }
     render() {
@@ -354,18 +357,19 @@ export default class NotPlaced extends Component {
             }
         ];
 
-        const { warehouseData, showWareHouse, subData, selectedRows, showWareHouseEdit, childData, defaultWarehouse,pageOption,total } = this.state
+        const { warehouseData, showWareHouse, subData, selectedRows, showWareHouseEdit, childData, defaultWarehouse, pageOption, total } = this.state
         const rowSelection = {
             onChange: (selectedRowKeys, selectedRows) => {
                 this.selecteWarehouse(selectedRows)
             },
         };
         const warehouseGroup = [
-            { value: '1', name: '陈总仓' },
+            { value: '1', name: '陈总老东家仓' },
             { value: '2', name: '谢总仓' },
             { value: '3', name: '至美通' },
             { value: '4', name: '易仓' },
             { value: '5', name: '云仓' },
+            { value: '6', name: '陈总自营仓' },
         ]
         const paginationProps = {
             showSizeChanger: true,

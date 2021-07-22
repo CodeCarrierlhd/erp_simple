@@ -20,10 +20,11 @@ export default class ComponentsList extends Component {
         total:0
     }
     componentDidMount() {
-        const {pageOption}=this.state
-        this.getAfterSaleList(pageOption)
+        
+        this.getAfterSaleList()
     }
-    getAfterSaleList = (pageOption) => {
+    getAfterSaleList = () => {
+        const {pageOption}=this.state
         this.$axios.get('/partsStatisticsList',{
             params:pageOption
         }).then(res => {

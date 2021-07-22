@@ -233,11 +233,12 @@ class AddWareHouse extends Component {
             },
         ];
         const warehouseGroup = [
-            { value: '1', name: '陈总仓' },
+            { value: '1', name: '陈总老东家仓' },
             { value: '2', name: '谢总仓' },
             { value: '3', name: '至美通' },
             { value: '4', name: '易仓' },
             { value: '5', name: '云仓' },
+            { value: '6', name: '陈总自营仓' },
         ]
         const paginationProps = {
             showSizeChanger: true,
