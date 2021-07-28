@@ -12,7 +12,7 @@ export default class AfterSaleList extends Component {
         lightboxIsOpen: false,
         afterSaleId: '',
         pageOption:{
-            pageNo: 0,
+            pageNo: 1,
             pageSize: 50
         },
         total:0
@@ -213,7 +213,7 @@ export default class AfterSaleList extends Component {
             showTotal: () => `共${total}条`,
             total: total,
             pageSizeOptions: ['50', '100', '200'],
-            current: pageOption.pageNo,
+            current: (pageOption.pageNo-1)*pageOption.pageSize,
             pageSize: pageOption.pageSize,
             onShowSizeChange: (current, pageSize) => this.changePageSize(current, pageSize),
             onChange: (current, size) => this.paginationChange(current, size)

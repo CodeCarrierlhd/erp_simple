@@ -18,7 +18,7 @@ export default class NotPlaced extends Component {
         showWareHouseEdit: false,
         defaultWarehouse: 'all',
         pageOption: {
-            pageNo: 0,
+            pageNo: 1,
             pageSize: 50
         },
         total: 0
@@ -281,6 +281,12 @@ export default class NotPlaced extends Component {
                 render: (text, record) => moment(text).format("YYYY-MM-DD")
             },
             {
+                title: '出港日期',
+                dataIndex: 'deliveryStartDate',
+                key: 'deliveryStartDate',
+                render: (text, record) => moment(text).format("YYYY-MM-DD")
+            },
+            {
                 title: '预计到港时间',
                 dataIndex: 'arrivalTime',
                 key: 'arrivalTime',
@@ -377,7 +383,7 @@ export default class NotPlaced extends Component {
             showTotal: () => `共${total}条`,
             total: total,
             pageSizeOptions: ['50', '100', '200'],
-            current: pageOption.pageNo,
+            current: (pageOption.pageNo-1)*pageOption.pageSize,
             pageSize: pageOption.pageSize,
             onShowSizeChange: (current, pageSize) => this.changePageSize(current, pageSize),
             onChange: (current, size) => this.paginationChange(current, size)

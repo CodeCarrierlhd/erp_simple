@@ -17,7 +17,7 @@ function ProducNumber(props) {
         showTotal: () => `共${data.length}条`,
         total: data.length,
         pageSizeOptions:['30','50','100'],
-        current: pageOption.pageNo,
+        current: (pageOption.pageNo-1)*pageOption.pageSize,
         pageSize: pageOption.pageSize,
         onShowSizeChange: (current,pageSize) => changePageSize(current,pageSize),
         onChange: (current, size) => paginationChange(current, size)

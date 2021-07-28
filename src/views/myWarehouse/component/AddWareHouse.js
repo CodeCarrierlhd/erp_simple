@@ -20,7 +20,7 @@ class AddWareHouse extends Component {
         proGroup: [],
         productNumber: 0,
         pageOption:{
-            pageNo: 0,
+            pageNo: 1,
             pageSize: 50
         },
         total:0
@@ -52,7 +52,7 @@ class AddWareHouse extends Component {
             values.fileUpload = fileList.toString()
             if (err) return err
             for (const key in values) {
-                if (key === 'deliveryDate' || key === 'arrivalTime' || key === 'relArrivedTime')  {
+                if (key === 'deliveryDate' || key === 'arrivalTime' || key === 'relArrivedTime' || key === 'deliveryStartDate' )  {
                     values[key] = moment(values[key]).format("YYYY-MM-DD")
                 }
             }
@@ -246,7 +246,7 @@ class AddWareHouse extends Component {
             showTotal: () => `共${total}条`,
             total: total,
             pageSizeOptions: ['50', '100', '200'],
-            current: pageOption.pageNo,
+            current: (pageOption.pageNo-1)*pageOption.pageSize,
             pageSize: pageOption.pageSize,
             onShowSizeChange: (current, pageSize) => this.changePageSize(current, pageSize),
             onChange: (current, size) => this.paginationChange(current, size)
@@ -308,6 +308,12 @@ class AddWareHouse extends Component {
                     </Form.Item>
                     <Form.Item label="发货日期">
                         {getFieldDecorator('deliveryDate', {
+                            rules: [
+                            ]
+                        })(<DatePicker format={dateFormat} style={{ width: "60%" }} />)}
+                    </Form.Item>
+                    <Form.Item label="出港日期">
+                        {getFieldDecorator('deliveryStartDate', {
                             rules: [
                             ]
                         })(<DatePicker format={dateFormat} style={{ width: "60%" }} />)}
@@ -374,7 +380,7 @@ export default Form.create({
         // {}   [键 ， 值]
         if (!props.childData) { return null; } else {
             return Object.entries(props.childData).reduce((v0, [k, v]) => {
-                if (k === 'arrivalTime' || k === 'deliveryDate' || k === 'relArrivedTime') {
+                if (k === 'arrivalTime' || k === 'deliveryDate' || k === 'relArrivedTime'|| k === 'deliveryStartDate') {
                     v0[k] = Form.createFormField({
                         value: moment(v),
                     })
